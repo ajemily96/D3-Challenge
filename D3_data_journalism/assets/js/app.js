@@ -9,8 +9,11 @@ var margin = {
   left: 100
 };
 
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
+
 // Create SVG Wrapper
-var svg = d3.select(".chart")
+var svg = d3.select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -20,7 +23,8 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Load Data from CSV
-d3.csv("data\data.csv").then( data => {
+d3.csv("assets\data\data.csv").then(data => {
+    console.log(data)
     // Cast Data as Numbers
     data.forEach(dataline => {
         dataline.poverty = +dataline.poverty
@@ -41,35 +45,32 @@ d3.csv("data\data.csv").then( data => {
     });
 
     // Create Scale Functions
-    var xLinearScale = d3.scaleLinear().domain([]).range([]); //fill with data
-    var yLinearScale = d3.scaleLinear().domain([]).range([]); //fill with data
+    var xLinearScale = d3.scaleLinear().domain([min(data.age),max(data.age)]).range([0,width]); //fill with data
+    var yLinearScale = d3.scaleLinear().domain([min(data.obesity), max(data.obesity)]).range([height,0]); //fill with data
 
     // Create Axis Functions
     var xaxis = d3.axisBottom(xLinearScale);
     var yaxis = d3.axisLeft(yLinearScale);
 
     // Append Axis to Chart
-    chartGroup.append("g").attr("transform", `translate(0, ${height})`).call(bottomAxis);
-    chartGroup.append("g").call(leftAxis);
+    chartGroup.append("g").attr("transform", `translate(0, ${height})`).call(xaxis);
+    chartGroup.append("g").call(yaxis);
 
     // Create Circles
-    var circlesGroup =chartGroup.selectAll("circle")
+    chartGroup.selectAll("circle")
     .data(data)
     .enter()
     .append("circle")
-    .attr("cx", d => xLinearScale(d.)) //fill with data
-    .attr("cy", d => yLinearScale(d.)) //fill with data
+    .attr("cx", d => xLinearScale(d.age)) //fill with data
+    .attr("cy", d => yLinearScale(d.obesity)) //fill with data
     .attr("r", "15")
-    .attr("fill", "pink")
-    .attr("opacity", ".5")
-    //add attr to have the abreviation in the circle
-    ;
+    .attr("fill", "blue")
+    .attr("opacity", ".5");
 
-    // Initialize Tooltip --optional
-
-    // Create Tooltip in the chart --optional
-
-    // Create Event Listeners to Display Tooltip --optional
+    /* Create the Text Inside the Circles */
+    chartGroup.append("text")
+        .attr("dx", function(d){return -20})
+        .text(function(d){return d.abbr})
 
     // Create Axes Labels
     chartGroup.append("text")
