@@ -56,12 +56,13 @@ d3.csv("assets/data/data.csv").then(data => {
     chartGroup.append("g").attr("transform", `translate(0, ${height})`).call(xaxis);
     chartGroup.append("g").call(yaxis);
     
-    // Create Circles
+    // Create blocks to hold the circles
     var circles = chartGroup.selectAll("circle")
     .data(data)
     .enter()
     .append("g");
 
+    // Create Circles
     circles.append("circle")
     .attr("cx", d => xLinearScale(d.age)) //fill with data
     .attr("cy", d => yLinearScale(d.obesity)) //fill with data
@@ -72,6 +73,7 @@ d3.csv("assets/data/data.csv").then(data => {
     
     /* Create the Text Inside the Circles */
     circles.append("text")
+    // .attr("style","color:white;")
     .attr("dx", d => -20)
     .attr("transform", d => "translate(" + (xLinearScale(d.age)+10) + "," + (yLinearScale(d.obesity)+5) + ")") // had to adjust to center text
     .text(d => d.abbr);
@@ -83,12 +85,12 @@ d3.csv("assets/data/data.csv").then(data => {
       .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
       .attr("class", "axisText")
-      .text("Number of Billboard 100 Hits");
+      .text("Obese (%)");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
-      .text("Hair Metal Band Hair Length (inches)");
+      .text("Age (Yr)");
   }).catch(error => {
     console.log(error);
   });
