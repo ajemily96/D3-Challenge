@@ -23,7 +23,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Load Data from CSV
-d3.csv("assets\data\data.csv").then(data => {
+d3.csv("assets/data/data.csv").then(data => {
     console.log(data)
     // Cast Data as Numbers
     data.forEach(dataline => {
@@ -45,8 +45,8 @@ d3.csv("assets\data\data.csv").then(data => {
     });
 
     // Create Scale Functions
-    var xLinearScale = d3.scaleLinear().domain([min(data.age),max(data.age)]).range([0,width]); //fill with data
-    var yLinearScale = d3.scaleLinear().domain([min(data.obesity), max(data.obesity)]).range([height,0]); //fill with data
+    var xLinearScale = d3.scaleLinear().domain(d3.extent(data, item => item.age)).range([0,width]); //fill with data
+    var yLinearScale = d3.scaleLinear().domain(d3.extent(data, item => item.obesity)).range([height,0]); //fill with data
 
     // Create Axis Functions
     var xaxis = d3.axisBottom(xLinearScale);
@@ -56,6 +56,9 @@ d3.csv("assets\data\data.csv").then(data => {
     chartGroup.append("g").attr("transform", `translate(0, ${height})`).call(xaxis);
     chartGroup.append("g").call(yaxis);
 
+    // Create and Place the "blocs"containting the circle and the text
+    
+    
     // Create Circles
     chartGroup.selectAll("circle")
     .data(data)
@@ -65,12 +68,15 @@ d3.csv("assets\data\data.csv").then(data => {
     .attr("cy", d => yLinearScale(d.obesity)) //fill with data
     .attr("r", "15")
     .attr("fill", "blue")
-    .attr("opacity", ".5");
-
+    .attr("opacity", ".5")
+    .text(d => d.abbr);
+    
     /* Create the Text Inside the Circles */
-    chartGroup.append("text")
-        .attr("dx", function(d){return -20})
-        .text(function(d){return d.abbr})
+    chartGroup.selectAll("circle")
+    .data(data)
+    .append("text")
+    .attr("dx", d => -20)
+    .text(d => d.abbr);
 
     // Create Axes Labels
     chartGroup.append("text")
