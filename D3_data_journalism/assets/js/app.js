@@ -60,12 +60,13 @@ d3.csv("assets/data/data.csv").then(data => {
     var circles = chartGroup.selectAll("circle")
     .data(data)
     .enter()
-    .append("g");
+    .append("g")
+    .attr("transform", d => "translate(" + xLinearScale(d.age) + "," + yLinearScale(d.obesity) + ")");
 
     // Create Circles
     circles.append("circle")
-    .attr("cx", d => xLinearScale(d.age)) //fill with data
-    .attr("cy", d => yLinearScale(d.obesity)) //fill with data
+    // .attr("cx", d => xLinearScale(d.age)) //fill with data
+    // .attr("cy", d => yLinearScale(d.obesity)) //fill with data
     .attr("r", "15")
     .attr("fill", "blue")
     .attr("opacity", ".5")
@@ -74,8 +75,9 @@ d3.csv("assets/data/data.csv").then(data => {
     /* Create the Text Inside the Circles */
     circles.append("text")
     // .attr("style","color:white;")
-    .attr("dx", d => -20)
-    .attr("transform", d => "translate(" + (xLinearScale(d.age)+10) + "," + (yLinearScale(d.obesity)+5) + ")") // had to adjust to center text
+    .attr("dx", d => -10)
+    .attr("dy", d => 5)
+    // .attr("transform", d => "translate(" + (xLinearScale(d.age)+10) + "," + (yLinearScale(d.obesity)+5) + ")") // had to adjust to center text
     .text(d => d.abbr);
 
     // Create Axes Labels
